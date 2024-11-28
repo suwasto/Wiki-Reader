@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import app.id.devfest.articlesummarization.core.data.local.Wiki
 import app.id.devfest.articlesummarization.core.data.remote.repository.WikiRepository
 import app.id.devfest.articlesummarization.screens.component.WikiListMapper
+import app.id.devfest.articlesummarization.screens.component.WikiListUI
 import coil.network.HttpException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -101,6 +102,7 @@ class WikiListViewModel @Inject constructor(
                     _uiState.value = _uiState.value.copy(
                         loading = false,
                         wikiListUI = wikilist,
+                        selectedItem = wikilist.firstOrNull()
                     )
                 }
         }
@@ -115,6 +117,12 @@ class WikiListViewModel @Inject constructor(
             } catch (_: Exception) {
             }
         }
+    }
+
+    fun setSelectedItem(wikiListUI: WikiListUI) {
+        _uiState.value = _uiState.value.copy(
+            selectedItem = wikiListUI
+        )
     }
 
 }

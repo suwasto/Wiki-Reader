@@ -73,16 +73,10 @@ fun WikiListScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
     val context = LocalContext.current
-    var selectedItem by rememberSaveable {
-        mutableStateOf<WikiListUI?>(null)
-    }
+
     val navigator = rememberListDetailPaneScaffoldNavigator<WikiListUI>()
-    BackHandler {
-        if (navigator.canNavigateBack()) {
-            navigator.navigateBack()
-        } else {
-            selectedItem = null
-        }
+    BackHandler(navigator.canNavigateBack()) {
+        navigator.navigateBack()
     }
 
     LaunchedEffect(Unit) {
@@ -97,7 +91,7 @@ fun WikiListScreen(
                 }
 
                 is WikiListUIEvent.NavigateToDetail -> {
-                    selectedItem = event.wikiListUI
+                    viewModel.setSelectedItem(event.wikiListUI)
                     navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, event.wikiListUI)
                 }
 
@@ -112,8 +106,6 @@ fun WikiListScreen(
                 is WikiListUIEvent.OnBackFromDetail -> {
                     if (navigator.canNavigateBack()) {
                         navigator.navigateBack()
-                    } else {
-                        selectedItem = null
                     }
                 }
             }
@@ -121,7 +113,6 @@ fun WikiListScreen(
     }
 
     WikiListDetailPane(
-        selectedItem = selectedItem,
         navigator = navigator,
         state = state,
         onEvent = {
@@ -133,46 +124,36 @@ fun WikiListScreen(
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun WikiListDetailPane(
-    selectedItem: WikiListUI?,
     navigator: ThreePaneScaffoldNavigator<WikiListUI>,
     state: WikiListUIState,
     onEvent: (WikiListUIEvent) -> Unit,
 ) {
-    if (selectedItem == null) {
-        WikiList(
-            state = state,
-            onEvent = {
-                onEvent(it)
+    ListDetailPaneScaffold(
+        directive = navigator.scaffoldDirective,
+        value = navigator.scaffoldValue,
+        listPane = {
+            AnimatedPane {
+                WikiList(
+                    state = state,
+                    onEvent = onEvent
+                )
             }
-        )
-    } else {
-        ListDetailPaneScaffold(
-            directive = navigator.scaffoldDirective,
-            value = navigator.scaffoldValue,
-            listPane = {
-                AnimatedPane {
-                    WikiList(
-                        state = state,
-                        onEvent = onEvent
+        },
+        detailPane = {
+            AnimatedPane {
+                state.selectedItem?.let { selectedItem ->
+                    WikiDetailScreen(
+                        wikiListUI = selectedItem,
+                        backHandler = {
+                            onEvent(
+                                WikiListUIEvent.OnBackFromDetail
+                            )
+                        }
                     )
                 }
-            },
-            detailPane = {
-                AnimatedPane {
-                    navigator.currentDestination?.content?.let {
-                        WikiDetailScreen(
-                            wikiListUI = selectedItem,
-                            backHandler = {
-                                onEvent(
-                                    WikiListUIEvent.OnBackFromDetail
-                                )
-                            }
-                        )
-                    }
-                }
             }
-        )
-    }
+        }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

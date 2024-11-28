@@ -60,15 +60,10 @@ fun BookmarksScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
-    var selectedItem by rememberSaveable { mutableStateOf<WikiListUI?>(null) }
     val navigator = rememberListDetailPaneScaffoldNavigator<WikiListUI>()
 
-    BackHandler {
-        if (navigator.canNavigateBack()) {
-            navigator.navigateBack()
-        } else {
-            selectedItem = null
-        }
+    BackHandler(navigator.canNavigateBack()) {
+        navigator.navigateBack()
     }
 
     LaunchedEffect(Unit) {
@@ -76,17 +71,17 @@ fun BookmarksScreen(
             when (event) {
                 is BookmarkUIEvent.DeleteBookmark -> viewModel.deleteBookmark(event.wikiListUI)
                 is BookmarkUIEvent.NavigateToDetail -> {
-                    selectedItem = event.item
+                    viewModel.setSelectedItem(event.item)
                     navigator.navigateTo(ListDetailPaneScaffoldRole.Detail, event.item)
                 }
+
                 is BookmarkUIEvent.ShowToast -> {
                     Toast.makeText(context, event.msg, Toast.LENGTH_SHORT).show()
                 }
+
                 is BookmarkUIEvent.OnBackFromDetail -> {
                     if (navigator.canNavigateBack()) {
                         navigator.navigateBack()
-                    } else {
-                        selectedItem = null
                     }
                 }
             }
@@ -94,7 +89,6 @@ fun BookmarksScreen(
     }
 
     BookmarksListDetailPane(
-        selectedItem = selectedItem,
         navigator = navigator,
         state = uiState,
         onEvent = { viewModel.handleEvent(it) }
@@ -104,29 +98,23 @@ fun BookmarksScreen(
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun BookmarksListDetailPane(
-    selectedItem: WikiListUI?,
     navigator: ThreePaneScaffoldNavigator<WikiListUI>,
     state: BookmarkUiState,
     onEvent: (BookmarkUIEvent) -> Unit,
 ) {
-    if (selectedItem == null) {
-        BookmarksList(
-            state = state,
-            onEvent = onEvent
-        )
-    } else {
-        ListDetailPaneScaffold(
-            directive = navigator.scaffoldDirective,
-            value = navigator.scaffoldValue,
-            listPane = {
-                AnimatedPane {
-                    BookmarksList(
-                        state = state,
-                        onEvent = onEvent
-                    )
-                }
-            },
-            detailPane = {
+    ListDetailPaneScaffold(
+        directive = navigator.scaffoldDirective,
+        value = navigator.scaffoldValue,
+        listPane = {
+            AnimatedPane {
+                BookmarksList(
+                    state = state,
+                    onEvent = onEvent
+                )
+            }
+        },
+        detailPane = {
+            state.selectedItem?.let { selectedItem ->
                 AnimatedPane {
                     WikiDetailScreen(
                         wikiListUI = selectedItem,
@@ -136,8 +124,8 @@ fun BookmarksListDetailPane(
                     )
                 }
             }
-        )
-    }
+        }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

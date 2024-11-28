@@ -25,6 +25,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -38,6 +39,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.window.core.layout.WindowSizeClass
+import androidx.window.core.layout.WindowWidthSizeClass
 import app.id.devfest.articlesummarization.R
 import app.id.devfest.articlesummarization.screens.component.WikiListUI
 import coil.compose.AsyncImage
@@ -47,8 +50,8 @@ fun WikiDetailScreen(
     wikiListUI: WikiListUI,
     backHandler: () -> Unit,
     viewModel: WikiDetailViewModel = hiltViewModel(),
+    windowSizeClass: WindowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
 ) {
-
     LaunchedEffect(wikiListUI) {
         viewModel.sendPrompt(wikiListUI.content)
     }
@@ -58,7 +61,8 @@ fun WikiDetailScreen(
     WikiDetail(
         state = state,
         wikiListUI = wikiListUI,
-        popNavigation = backHandler
+        popNavigation = backHandler,
+        windowSizeClass
     )
 }
 
@@ -67,7 +71,8 @@ fun WikiDetailScreen(
 fun WikiDetail(
     state: WikiDetailUiState,
     wikiListUI: WikiListUI,
-    popNavigation: () -> Unit
+    popNavigation: () -> Unit,
+    windowSizeClass: WindowSizeClass
 ) {
     Scaffold(
         topBar = {
@@ -84,12 +89,14 @@ fun WikiDetail(
                     )
                 },
                 navigationIcon = {
-                    IconButton(
-                        onClick = {
-                            popNavigation.invoke()
+                    if (windowSizeClass.windowWidthSizeClass == WindowWidthSizeClass.COMPACT) {
+                        IconButton(
+                            onClick = {
+                                popNavigation.invoke()
+                            }
+                        ) {
+                            Icon(painter = painterResource(R.drawable.baseline_arrow_back_24), "")
                         }
-                    ) {
-                        Icon(painter = painterResource(R.drawable.baseline_arrow_back_24), "")
                     }
                 }
             )
@@ -204,6 +211,7 @@ fun WikiDetailSuccessPreview() {
         WikiListUI(
             "This is the thumbnail", "", "", true
         ),
-        {}
+        {},
+        currentWindowAdaptiveInfo().windowSizeClass
     )
 }

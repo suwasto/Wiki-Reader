@@ -56,7 +56,8 @@ class BookmarksViewModel @Inject constructor(
                 .collect { mappedBookmarks ->
                     _uiState.value = _uiState.value.copy(
                         loading = false,
-                        items = mappedBookmarks
+                        items = mappedBookmarks,
+                        selectedItem = mappedBookmarks.firstOrNull()
                     )
                 }
         }
@@ -78,6 +79,12 @@ class BookmarksViewModel @Inject constructor(
             )
             wikiDao.updateWiki(wiki)
         }
+    }
+
+    fun setSelectedItem(wikiListUI: WikiListUI) {
+        _uiState.value = _uiState.value.copy(
+            selectedItem = wikiListUI
+        )
     }
 
 }

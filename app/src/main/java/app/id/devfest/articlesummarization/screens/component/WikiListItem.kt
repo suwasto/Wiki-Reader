@@ -109,7 +109,6 @@ fun WikiListItem(
                 fontSize = 16.sp,
                 maxLines = 3,
                 overflow = TextOverflow.Ellipsis,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
             )
         }
 

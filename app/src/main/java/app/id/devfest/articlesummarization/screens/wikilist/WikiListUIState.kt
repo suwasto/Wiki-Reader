@@ -6,4 +6,5 @@ data class WikiListUIState(
     var wikiListUI: List<WikiListUI>,
     var errorMsg: String,
     var loading: Boolean = true,
+    var selectedItem: WikiListUI? = null
 )
