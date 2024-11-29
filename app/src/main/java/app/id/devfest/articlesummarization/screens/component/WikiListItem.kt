@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -42,78 +43,79 @@ fun WikiListItem(
     onClick: () -> Unit,
     onClickBookmark: () -> Unit
 ) {
-
     ElevatedCard(
-        modifier = Modifier
-            .wrapContentHeight()
-            .wrapContentWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer,
-        ),
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer),
         onClick = onClick,
     ) {
-
-
-        Box(
-            Modifier
-                .fillMaxWidth()
-                .height(200.dp)
-        ) {
-            if (!thumbnailUrl.isNullOrBlank()) {
-                AsyncImage(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp),
-                    model = thumbnailUrl,
-                    contentDescription = null
-                )
-            } else {
-                Image(
-                    painter = painterResource(R.drawable.ic_placeholder),
-                    contentDescription = "No Thumbnail",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                        .background(Color.White),
-                )
-            }
-            IconButton(
-                modifier = Modifier.align(Alignment.TopEnd),
-                onClick = {
-                    onClickBookmark()
-                }
-            ) {
-                val bookmark = if (isBookmark) R.drawable.ic_bookmark_filled else R.drawable.ic_bookmark_border
-                Image(
-                    painter = painterResource(bookmark),
-                    contentDescription = "bookmark",
-                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
-                )
-            }
-        }
-
-        Column(
-            modifier = Modifier.padding(8.dp),
-            horizontalAlignment = Alignment.Start
-        ) {
-            Text(
-                text = title,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+        Column {
+            ThumbnailWithBookmark(thumbnailUrl, isBookmark, onClickBookmark)
             Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = description,
-                fontSize = 16.sp,
-                maxLines = 3,
-                overflow = TextOverflow.Ellipsis,
-            )
+            TextContent(title, description)
         }
-
     }
 }
+
+@Composable
+fun ThumbnailWithBookmark(
+    thumbnailUrl: String?,
+    isBookmark: Boolean,
+    onClickBookmark: () -> Unit
+) {
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .height(200.dp)
+    ) {
+        if (!thumbnailUrl.isNullOrBlank()) {
+            AsyncImage(
+                model = thumbnailUrl,
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize()
+            )
+        } else {
+            Image(
+                painter = painterResource(R.drawable.ic_placeholder),
+                contentDescription = "No Thumbnail",
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White),
+            )
+        }
+        IconButton(
+            modifier = Modifier.align(Alignment.TopEnd),
+            onClick = onClickBookmark
+        ) {
+            val bookmarkIcon =
+                if (isBookmark) R.drawable.ic_bookmark_filled else R.drawable.ic_bookmark_border
+            Image(
+                painter = painterResource(bookmarkIcon),
+                contentDescription = "Bookmark",
+                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
+            )
+        }
+    }
+}
+
+@Composable
+fun TextContent(title: String, description: String) {
+    Text(
+        modifier = Modifier.padding(top = 8.dp, start = 8.dp, end = 8.dp, bottom = 4.dp),
+        text = title,
+        fontSize = 20.sp,
+        fontWeight = FontWeight.Bold,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis
+    )
+    Text(
+        modifier =Modifier.padding(top = 8.dp, start = 8.dp, end = 8.dp, bottom = 8.dp),
+        text = description,
+        fontSize = 16.sp,
+        maxLines = 3,
+        overflow = TextOverflow.Ellipsis
+    )
+}
+
 
 @Preview(showBackground = true)
 @Composable

@@ -18,3 +18,4 @@ class WikiListMapper {
     }
 
 }
+

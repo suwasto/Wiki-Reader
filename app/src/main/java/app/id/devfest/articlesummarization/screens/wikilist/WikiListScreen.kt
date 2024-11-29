@@ -162,10 +162,8 @@ fun WikiList(
     state: WikiListUIState,
     onEvent: (WikiListUIEvent) -> Unit
 ) {
-
     var refreshing by remember { mutableStateOf(false) }
     val pullRefreshState = rememberPullToRefreshState()
-
     PullToRefreshBox(
         modifier = Modifier
             .fillMaxSize(),
@@ -248,6 +246,8 @@ fun WikiList(
     }
 
 }
+
+
 
 @Composable
 private fun HeaderSection(

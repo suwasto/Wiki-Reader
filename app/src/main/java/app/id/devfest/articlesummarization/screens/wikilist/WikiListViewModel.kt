@@ -28,14 +28,9 @@ class WikiListViewModel @Inject constructor(
     private val repository: WikiRepository,
     private val mapper: WikiListMapper
 ) : ViewModel() {
-
-    private val _uiState = MutableStateFlow(
-        WikiListUIState(
-            wikiListUI = emptyList(), errorMsg = ""
-        )
-    )
+    
+    private val _uiState = MutableStateFlow(WikiListUIState(wikiListUI = emptyList(), errorMsg = ""))
     val uiState: StateFlow<WikiListUIState> = _uiState.asStateFlow()
-
     private val _uiEvents = MutableSharedFlow<WikiListUIEvent>(0)
     val uiEvents: SharedFlow<WikiListUIEvent> = _uiEvents.asSharedFlow()
     private var wikiJob: Job? = null

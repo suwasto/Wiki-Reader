@@ -18,7 +18,6 @@ interface WikipediaApi {
         @Query("origin") origin: String = "*",
         @Query("pithumbsize") pithumbsize: Int = 500
     ): WikiResponse
-
     // API call for searching articles by a query
     @GET("w/api.php")
     suspend fun search(
@@ -29,7 +28,6 @@ interface WikipediaApi {
         @Query("format") format: String = "json",
         @Query("origin") origin: String = "*"
     ): SearchResponse
-
     // API call for getting featured articles
     @GET("w/api.php")
     suspend fun getFeatured(
@@ -41,3 +39,4 @@ interface WikipediaApi {
         @Query("origin") origin: String = "*"
     ): FeaturedResponse
 }
+

@@ -23,9 +23,7 @@ import app.id.devfest.articlesummarization.screens.wikilist.WikiListScreen
 
 @Composable
 fun WikiBottomBar() {
-
     var currentDestination by rememberSaveable { mutableStateOf(BottomNavigationDestination.HOME) }
-
     NavigationSuiteScaffold(
         navigationSuiteItems = {
             BottomNavigationDestination.entries.forEach {
@@ -46,12 +44,8 @@ fun WikiBottomBar() {
         },
         content = {
             when (currentDestination) {
-                BottomNavigationDestination.HOME -> {
-                    WikiListScreen()
-                }
-                BottomNavigationDestination.BOOKMARKS -> {
-                    BookmarksScreen()
-                }
+                BottomNavigationDestination.HOME -> WikiListScreen()
+                BottomNavigationDestination.BOOKMARKS -> BookmarksScreen()
             }
         },
         navigationSuiteColors = NavigationSuiteDefaults.colors(

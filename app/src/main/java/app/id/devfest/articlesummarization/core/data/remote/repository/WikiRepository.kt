@@ -12,5 +12,5 @@ interface WikiRepository {
     fun getAllBookmarks(): Flow<List<Wiki>>
 
     suspend fun updateWiki(wiki: Wiki)
-
 }
+

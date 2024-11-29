@@ -64,3 +64,4 @@ class WikiRepositoryImpl @Inject constructor(
         wikiDao.updateWiki(wiki)
     }
 }
+

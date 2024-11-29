@@ -78,6 +78,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+
+    // generative ai
     implementation(libs.generativeai)
 
     implementation(libs.hilt.android)
@@ -90,6 +92,7 @@ dependencies {
     implementation(libs.retrofit.converter.gson) // Converter for JSON using Gson
     // OkHttp dependencies
     implementation(libs.okhttp) // OkHttp core library
+
     // adaptive navigation
     implementation(libs.androidx.material3.adaptive.navigation.suite)
     implementation(libs.androidx.adaptive)

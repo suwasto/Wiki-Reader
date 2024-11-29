@@ -20,3 +20,4 @@ class WikiResponseDeserializer : JsonDeserializer<WikiResponse> {
         return WikiResponse(QueryResponse(page))
     }
 }
+

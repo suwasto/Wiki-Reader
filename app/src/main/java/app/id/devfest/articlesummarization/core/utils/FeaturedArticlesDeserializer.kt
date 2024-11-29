@@ -39,3 +39,4 @@ class FeaturedArticlesDeserializer : JsonDeserializer<FeaturedResponse> {
         return FeaturedResponse(query)
     }
 }
+
