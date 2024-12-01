@@ -52,7 +52,7 @@ fun WikiDetailScreen(
     viewModel: WikiDetailViewModel = hiltViewModel(),
     windowSizeClass: WindowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
 ) {
-    LaunchedEffect(wikiListUI) {
+    LaunchedEffect(Unit) {
         viewModel.sendPrompt(wikiListUI.content)
     }
 

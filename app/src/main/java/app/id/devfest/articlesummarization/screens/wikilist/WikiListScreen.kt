@@ -366,13 +366,21 @@ fun SearchBar(
     }
 }
 
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Preview(showBackground = true)
 @Composable
 fun PreviewWikiList() {
+    val dummyData = WikiListUI(
+        "This is a test tittle",
+        "This is a test content",
+        "",
+        false
+    )
     ArticleSummarizationTheme {
-        WikiList(
+        WikiListDetailPane(
+            navigator = rememberListDetailPaneScaffoldNavigator<WikiListUI>(),
             state = WikiListUIState(
-                emptyList(), ""
+                listOf(dummyData), "", false, selectedItem = dummyData
             ),
             onEvent = {}
         )

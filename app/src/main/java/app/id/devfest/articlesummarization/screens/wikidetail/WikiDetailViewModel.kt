@@ -4,6 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.id.devfest.articlesummarization.BuildConfig
 import com.google.ai.client.generativeai.GenerativeModel
+import com.google.ai.client.generativeai.type.BlockThreshold
+import com.google.ai.client.generativeai.type.HarmCategory
+import com.google.ai.client.generativeai.type.SafetySetting
 import com.google.ai.client.generativeai.type.content
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +25,13 @@ class WikiDetailViewModel @Inject constructor() : ViewModel() {
 
     private val generativeModel = GenerativeModel(
         modelName = "gemini-1.5-flash",
-        apiKey = BuildConfig.apiKey
+        apiKey = BuildConfig.apiKey,
+        safetySettings = listOf(
+            SafetySetting(HarmCategory.HARASSMENT, BlockThreshold.LOW_AND_ABOVE),
+            SafetySetting(HarmCategory.HATE_SPEECH, BlockThreshold.LOW_AND_ABOVE),
+            SafetySetting(HarmCategory.SEXUALLY_EXPLICIT, BlockThreshold.LOW_AND_ABOVE),
+            SafetySetting(HarmCategory.DANGEROUS_CONTENT, BlockThreshold.LOW_AND_ABOVE),
+        )
     )
 
     fun sendPrompt(
@@ -33,7 +42,6 @@ class WikiDetailViewModel @Inject constructor() : ViewModel() {
             summary = "",
             errorMsg = ""
         )
-
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val response = generativeModel.generateContent(
